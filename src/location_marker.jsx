@@ -2,21 +2,25 @@ import React, { useState } from "react";
 import { Marker, Popup, useMapEvents } from "react-leaflet";
 
 const LocationMarker = () => {
-  const [position, setPosition] = useState(null);
+  const [markers, setMarkers] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const map = useMapEvents({
-    click() {
-      map.locate();
+    click: (e) => {
+      setMarkers((prevMarkers) => [...prevMarkers, e]);
+      console.log(markers);
     },
-    locationfound(e) {
-      setPosition(e.latlng);
-      map.flyTo(e.latlng, map.getZoom());
-    },
+    // locationfound: (e) => {
+    //   setPosition(e.latlng);
+    //   // map.flyTo(e.latlng, map.getZoom());
+    // },
   });
 
-  return position === null ? null : (
-    <Marker position={position}>
-      <Popup>You are here</Popup>
-    </Marker>
-  );
+  return markers.length < 1
+    ? null
+    : markers.map((marker) => (
+        <Marker key={`${marker.latlng}`} position={marker.latlng}>
+          <Popup>You are here</Popup>
+        </Marker>
+      ));
 };
 export default LocationMarker;
