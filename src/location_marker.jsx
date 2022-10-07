@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Marker, Popup, useMapEvents } from "react-leaflet";
+import { Marker, useMapEvents } from "react-leaflet";
 
 const LocationMarker = () => {
   const [markers, setMarkers] = useState([]);
@@ -7,7 +7,6 @@ const LocationMarker = () => {
   const map = useMapEvents({
     click: (e) => {
       setMarkers((prevMarkers) => [...prevMarkers, e]);
-      console.log(markers);
     },
     // locationfound: (e) => {
     //   setPosition(e.latlng);
@@ -18,9 +17,7 @@ const LocationMarker = () => {
   return markers.length < 1
     ? null
     : markers.map((marker) => (
-        <Marker key={`${marker.latlng}`} position={marker.latlng}>
-          <Popup>You are here</Popup>
-        </Marker>
+        <Marker key={`${marker.latlng}`} position={marker.latlng} />
       ));
 };
 export default LocationMarker;
