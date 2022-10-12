@@ -1,23 +1,25 @@
-import React, { useState } from "react";
-import { Marker, Polygon, Popup, useMapEvents } from "react-leaflet";
+import React, { useContext } from "react";
+import { Marker, Polygon, useMapEvents } from "react-leaflet";
+import MarkersContext from "./services/markers/markers_context";
 
 const LocationMarker = () => {
-  const [markers, setMarkers] = useState([]);
+  const { markers, setMarkers, canAdd } = useContext(MarkersContext);
 
   // eslint-disable-next-line no-unused-vars
   const map = useMapEvents({
     click: (e) => {
-      setMarkers((prevMarkers) => [
-        ...prevMarkers,
-        [e.latlng.lat, e.latlng.lng],
-      ]);
+      if (canAdd) {
+        setMarkers((prevMarkers) => [
+          ...prevMarkers,
+          [e.latlng.lat, e.latlng.lng],
+        ]);
+      }
     },
   });
   const removeMarker = (pos) => {
     setMarkers((prevMarkers) =>
       prevMarkers.filter(
         (prevCoord) => JSON.stringify(prevCoord) !== JSON.stringify(pos)
-        // or (coord) => coord.lat !== pos.lat && coord.lng !== pos.lng
       )
     );
   };
@@ -32,11 +34,7 @@ const LocationMarker = () => {
               removeMarker(marker);
             },
           }}
-        >
-          <Popup>
-            <button type="button">Remove marker</button>
-          </Popup>
-        </Marker>
+        />
       ))}
       <Polygon positions={markers} />
     </>
